@@ -86,23 +86,7 @@ class Country
     {
         $array = $this->attributes;
 
-        if (is_null($key)) {
-            return $array;
-        }
-
-        if (array_key_exists($key, $array)) {
-            return $array[$key];
-        }
-
-        foreach (explode('.', $key) as $segment) {
-            if (is_array($array) && array_key_exists($segment, $array)) {
-                $array = $array[$segment];
-            } else {
-                return $default;
-            }
-        }
-
-        return $array;
+        return data_get($array, $key, $default ?? $array);
     }
 
     /**
@@ -280,7 +264,7 @@ class Country
     {
         $languageCode = $languageCode ? mb_strtoupper($languageCode) : null;
 
-        return $this->get("languages.{$languageCode}") ?: (current($this->get('languages', [])) ?: null);
+        return $this->get("languages.*.alpha2.{$languageCode}") ?: (current($this->get('languages', [])) ?: null);
     }
 
     /**
